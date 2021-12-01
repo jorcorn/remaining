@@ -82,6 +82,3 @@ def calculator(request):
         'form': form,
     })
 
-
-def about(request):
-    return render(request, 'calculator/about.html')
