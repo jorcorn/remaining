@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css_basics.css' %}" />
+</head>
+
+    <body>
+    <div class="header">
+        Boiler Tube Remaining Useful Life Calculator
+        <div class="header_link">
+            <a href="{% url 'calculator:calculator' %}"> Calculator </a>
+        </div>
+        <div class="header_link">
+            <a href="{% url 'calculator:about' %}"> About </a>
+        </div>
+        <div class="header_link">
+            <a href="https://davidnfrench.com/"> David N. French Wesbite</a>
+        </div>
+    </div>
+        <div class="row">
+            <form action='.' method="POST" id="inputDataForm">
+                        {% csrf_token %}
+
+                        {% if form.errors %}
+                            <div class="alert alert-danger">
+                            <div class = "error">{{ form.non_field_errors | striptags }}</div>
+                            </div>
+                        {% endif %}
+
+                        <div class="small_row">
+                            <div class ="error">{{ form.key.errors | striptags }}</div>
+                            <div class="input_name">Validation Key</div>
+                            <div class="form_input">{{ form.key }}</div>
+                        </div>
+
+                        <div class="small_row">
+                                <div class="input_name">Material</div>
+                                <div class="form_input">{{ form.material }}</div>
+                        </div>
+
+                        <div class="small_row">
+                            <div class = "error">{{ form.pressure.errors | striptags }}</div>
+                            <div class="input_name">Pressure</div>
+                            <div class = "form_input">{{ form.pressure }} psi</div><br>
+                        </div>
+
+                        <div class="small_row">
+                            <div class = "error">{{ form.od.errors | striptags}}</div>
+                            <div class="input_name">Outside Diameter</div>
+                            <div class = "form_input">{{ form.od }} inches</div><br><br>
+                        </div>
+
+
+                        <div class="small_row">
+                            <div class = "error">{{ form.min_wall_thickness.errors | striptags}}</div>
+                            <div class="input_name">Minimum Wall Thickness</div>
+                            <div class = "form_input">{{ form.min_wall_thickness }} inches</div><br><br>
+                        </div>
+
+                        <div class="small_row">
+                            <div class = "error">{{ form.tube_age.errors | striptags}}</div>
+                            <div class="input_name">Tube Age</div>
+                            <div class = "form_input">{{ form.tube_age }} years</div><br><br>
+                        </div>
+
+                        <div class="small_row">
+                            <div class = "error">{{ form.measured_oxide_thickness.errors | striptags}}</div>
+                            <div class="input_name">Measured Oxide Thickness</div>
+                            <div class = "form_input">{{ form.measured_oxide_thickness }} mils</div>
+                        </div>
+
+                        <div class="small_row">
+                            <div class = "error">{{ form.thickest_wall.errors | striptags}}</div>
+                            <div class="input_name">Thickest Wall</div>
+                            <div class = "form_input"> {{ form.thickest_wall }} inches</div><br><br>
+                        </div>
+
+                        <div class="small_row">
+                            <div class = "error">{{ form.thinnest_wall.errors | striptags}}</div>
+                            <div class="input_name">Thinnest Wall</div>
+                            <div class = "form_input"> {{ form.thinnest_wall }} inches</div><br><br>
+                        </div>
+
+                        <div class="small_row">
+                            <div class = "error">{{ form.thinnest_wall.errors | striptags}}</div>
+                            <div class="input_name">Oxide Growth Method</div>
+                            <div class = "form_input"> {{ form.oxide_method }}</div><br><br>
+                        </div>
+
+                        {% if material_eot == False %}
+                            <div class="small_row">
+                                <div class = "error">{{ form.thinnest_wall.errors | striptags}}</div>
+                                <div class="input_name">Est. Operating Temperature</div>
+                                <div class = "form_input">{{ form.est_op_temp }} &#176;F</div><br><br>
+                            </div>
+                        {% endif %}
+
+                        {% if method == 'custom' %}
+                            <div class="small_row">
+                                <div class = "error">{{ form.oxide_growth_rate.errors | striptags}}</div>
+                                <div class="input_name"><font> Oxide Growth Rate</font></div>
+                                <div class = "form_input">{{ form.oxide_growth_rate }} mils/year</div><br><br>
+                            </div>
+                        {% endif %}
+
+                        <div class="small_row">
+                            <div class="input_name"><font>Stress Curve</font></div>
+                            <div class = "form_input"> {{ form.stress_curve }}</div><br><br>
+                        </div><br><br>
+
+            </form>
+
+            <div class="button">
+                <input type="submit" name ="form button" value="Calculate RUL" form="inputDataForm">
+            </div>
+            <div class="button">
+                <input type="submit" name ="reset" value="Reset values" form="inputDataForm">
+            </div>
+
+        </div>
+
+
+        <div class="row">
+            <center>
+            {% if chart %}
+                <img src="data:image/png;base64, {{chart|safe}}"><br><br>
+            {% endif %}
+            <font size="6">
+                {% if year >= 0 %}
+                    {% if 20 > year >= 0 %}
+                        The tube has ~ {{ year }} year(s) of remaining useful life <br><br>
+                    {% elif year >= 20 %}
+                        The tube has more than {{ year }} year(s) of remaining useful life <br><br>
+                    {% endif %}
+                {% endif %}
+            </font>
+            </center>
+        </div>
+    </body>
+</html>
